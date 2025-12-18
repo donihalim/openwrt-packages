@@ -1,0 +1,29 @@
+#!/bin/sh
+# /etc/hotplug.d/net/99-wifi-led
+# WiFi LED control based on phy0 interfaces
+
+case "${ACTION}" in
+    add|remove)
+        # Only act on phy0-related interfaces
+        if echo "${DEVICENAME}" | grep -q "^phy0-"; then
+            sleep 2  # Short delay for state to settle after add/remove
+
+            # Check if any phy0 interface is UP
+            wifi_up=0
+            for iface in $(ls /sys/class/net/ | grep "^phy0-"); do
+                if ip link show "${iface}" 2>/dev/null | grep -q "state UP"; then
+                    wifi_up=1
+                    break
+                fi
+            done
+
+            if [ "${wifi_up}" -eq 1 ]; then
+                ledcontrol green:wlan on
+                logger -t wifi-led "phy0 interface(s) UP, green LED ON"
+            else
+                ledcontrol green:wlan off
+                logger -t wifi-led "No phy0 interface UP, green LED OFF"
+            fi
+        fi
+        ;;
+esac
