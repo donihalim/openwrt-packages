@@ -1,0 +1,8 @@
+
+config sms_tool_js
+	option modem_index '0'
+	option pnumber '62'
+	option prefix '1'
+	option sendingroup '0'
+	option delay '3'
+	option information '1'
