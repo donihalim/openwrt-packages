@@ -1,15 +1,23 @@
 #!/bin/sh
 # One-shot Qualcomm firmware dumper: mount partitions read-only,
-# copy relevant blobs into /lib/firmware.
+# copy relevant blobs into /lib/firmware, set a marker to avoid
+# re-running, and trigger a reboot. Accepts optional 'MCFG_PATH'
+# env var to override the MCFG relative path within modem/persist.
 
 set -e
+DEFAULT_FLAG="/lib/firmware/DUMPED"
 DEFAULT_MCFG_PATH="image/modem_pr/mcfg/configs/mcfg_sw/generic/common/row/gen_3gpp"
+
+MARKER="${FLAG:-$DEFAULT_FLAG}"
+[ -f "$MARKER" ] && exit 0
 
 log() { logger -t msm-fw-dumper "$*"; }
 
 MNT="/tmp/mnt/msmfw"
 FW="/lib/firmware"
 MCFG_REL="${MCFG_PATH:-$DEFAULT_MCFG_PATH}"
+
+log "start (marker not present)"
 
 # Prepare mount points and target
 mkdir -p "$MNT/modem" "$MNT/persist" "$FW/wlan/prima"
@@ -58,6 +66,8 @@ umount "$MNT/modem" 2>/dev/null || true
 umount "$MNT/persist" 2>/dev/null || true
 rmdir "$MNT/persist" "$MNT/modem" 2>/dev/null || true
 
-reboot
+# Set marker and reboot once
+touch "$MARKER"
+log "Dumped!"
 
 exit 0

@@ -1,7 +1,7 @@
 include $(TOPDIR)/rules.mk
 
 PKG_NAME:=msm-firmware-dumper
-PKG_VERSION:=1
+PKG_VERSION:=1.1
 PKG_RELEASE:=1
 PKG_LICENSE:=BSD-3-Clause
 
@@ -21,8 +21,11 @@ define Build/Compile
 endef
 
 define Package/$(PKG_NAME)/install
-	$(INSTALL_DIR) $(1)/etc/uci-defaults
-	$(INSTALL_BIN) ./files/00-msm_firmware_dumper $(1)/etc/uci-defaults
+	$(INSTALL_DIR) $(1)/usr/bin
+	$(INSTALL_BIN) ./files/msm-firmware-dumper.sh $(1)/usr/bin/msm-firmware-dumper
+
+	$(INSTALL_DIR) $(1)/etc/init.d
+	$(INSTALL_BIN) ./files/msm-firmware-dumper.init $(1)/etc/init.d/msm-firmware-dumper
 endef
 
 $(eval $(call BuildPackage,$(PKG_NAME)))
