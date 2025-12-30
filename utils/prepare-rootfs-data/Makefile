@@ -12,7 +12,7 @@ define Package/prepare-rootfs-data
   SECTION:=base
   CATEGORY:=Base system
   TITLE:=Automatically format rootfs_data on first boot
-  DEPENDS:=@TARGET_ROOTFS_SQUASHFS +e2fsprogs +blkid
+  DEPENDS:=@TARGET_ROOTFS_SQUASHFS +f2fs-tools +blkid
   PKGARCH:=all
 endef
 
