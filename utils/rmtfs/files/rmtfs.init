@@ -40,7 +40,7 @@ start_service() {
 	# -P: POSIX shared memory backend
 	# -r: allow read-only mode fallback if storage is not writable
 	# -s: enable shared memory regions as needed
-	procd_set_param command "$PROG" -P -r -s
+	procd_set_param command "$PROG" -P -s
 
 	# Auto-restart on crash: (threshold_ms timeout_s retries)
 	procd_set_param respawn 3600 5 5
